@@ -221,6 +221,8 @@
     document.addEventListener('click', handleAudio, { once: true });
     document.addEventListener('scroll', handleAudio, { once: true });
     document.addEventListener('touchstart', handleAudio, { once: true });
+    document.addEventListener('mousemove', handleAudio, { once: true });
+    document.addEventListener('keydown', handleAudio, { once: true });
 
     // Start loading images silently
     startImageLoading();
