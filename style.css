@@ -497,8 +497,8 @@ body {
 }
 
 .script-artists { top: 0; left: 0; }
-.script-joy { top: 70px; left: 40px; color: #fff; }
-.script-community { top: 140px; left: -20px; }
+.script-joy { top: 120px; left: 40px; color: #fff; }
+.script-community { top: 240px; left: -20px; }
 
 .hero-right-nav {
   display: flex;
