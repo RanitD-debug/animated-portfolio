@@ -216,13 +216,6 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas, { passive: true });
     window.addEventListener('scroll', calculateTargetFrame, { passive: true });
-    
-    // User interaction listeners for audio autoplay
-    document.addEventListener('click', handleAudio, { once: true });
-    document.addEventListener('scroll', handleAudio, { once: true });
-    document.addEventListener('touchstart', handleAudio, { once: true });
-    document.addEventListener('mousemove', handleAudio, { once: true });
-    document.addEventListener('keydown', handleAudio, { once: true });
 
     // Start loading images silently
     startImageLoading();
@@ -231,8 +224,15 @@
     requestAnimationFrame(animationLoop);
     initLenis();
     
-    // Attempt autoplay immediately
-    handleAudio();
+    // Handle Enter Overlay
+    const enterOverlay = document.getElementById('enter-overlay');
+    if (enterOverlay) {
+      enterOverlay.addEventListener('click', () => {
+        handleAudio();
+        enterOverlay.style.opacity = '0';
+        setTimeout(() => enterOverlay.remove(), 500);
+      }, { once: true });
+    }
   }
 
   // Boot on DOM ready
