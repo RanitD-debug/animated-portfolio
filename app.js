@@ -224,15 +224,16 @@
     requestAnimationFrame(animationLoop);
     initLenis();
     
-    // Handle Enter Overlay
-    const enterOverlay = document.getElementById('enter-overlay');
-    if (enterOverlay) {
-      enterOverlay.addEventListener('click', () => {
-        handleAudio();
-        enterOverlay.style.opacity = '0';
-        setTimeout(() => enterOverlay.remove(), 500);
-      }, { once: true });
-    }
+    // Start audio on first interaction to bypass autoplay restrictions silently
+    const startAudioSilent = () => {
+      handleAudio();
+      window.removeEventListener('click', startAudioSilent);
+      window.removeEventListener('scroll', startAudioSilent);
+      window.removeEventListener('touchstart', startAudioSilent);
+    };
+    window.addEventListener('click', startAudioSilent, { once: true, passive: true });
+    window.addEventListener('scroll', startAudioSilent, { once: true, passive: true });
+    window.addEventListener('touchstart', startAudioSilent, { once: true, passive: true });
   }
 
   // Boot on DOM ready

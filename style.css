@@ -774,6 +774,124 @@ body {
   .scroll-indicator.hidden {
     transform: translateY(15px);
   }
+
+  .content-layer {
+    padding: 10vw 5vw;
+    gap: 10vh;
+  }
+  
+  .hero-title {
+    font-size: clamp(3rem, 15vw, 5rem);
+  }
+  
+  .section-title {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+  
+  .script-text {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+  
+  .hero-section {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 3rem;
+  }
+  
+  .hero-right-nav {
+    margin-top: 1rem;
+    align-items: flex-start;
+  }
+  
+  .artist-led-section {
+    flex-direction: column;
+    gap: 3rem;
+    padding-left: 0;
+  }
+  
+  .script-cluster {
+    margin-top: 2rem;
+    width: 100%;
+    height: 200px;
+  }
+  
+  .joy-centered-section {
+    flex-direction: column;
+    gap: 3rem;
+    padding-left: 0;
+  }
+  
+  .joy-image-frame {
+    width: 80vw;
+    height: 100vw;
+  }
+  
+  .script-massive-joy {
+    font-size: clamp(4rem, 20vw, 6rem);
+    left: 0;
+  }
+  
+  .travel-section .travel-images {
+    flex-direction: column !important;
+    align-items: center;
+  }
+  
+  .travel-section .travel-img-frame {
+    width: 80vw !important;
+    height: 100vw !important;
+  }
+  
+  .community-images {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .comm-img-frame {
+    width: 80vw;
+    height: 60vw;
+  }
+  
+  .social-links {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .social-links .outline-btn {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .testimonial-block {
+    padding: 2rem;
+  }
+  
+  .testimonial-text {
+    font-size: 1.1rem;
+  }
+  
+  .quote-mark {
+    font-size: 4rem;
+    top: 5px;
+    left: 10px;
+  }
+  
+  .footer-details {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .headphone-overlay {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .hero-script-group {
+    left: 0;
+  }
+  
+  .script-artists { top: 0; left: 0; }
+  .script-joy { top: 60px; left: 20px; }
+  .script-community { top: 120px; left: -10px; }
 }
 
 /* Enter Overlay Pulse */
