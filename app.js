@@ -19,11 +19,8 @@
   // --- DOM Elements ---
   const canvas = document.getElementById('hero-canvas');
   const ctx = canvas.getContext('2d', { alpha: false });
-  const preloader = document.getElementById('preloader');
-  const progressBar = document.getElementById('progress-bar');
-  const loaderPercent = document.getElementById('loader-percent');
-  const loaderCount = document.getElementById('loader-count');
-  const loaderStatus = document.getElementById('loader-status');
+  const bgAudio = document.getElementById('bg-audio');
+  let audioStarted = false;
   const topProgressBar = document.getElementById('top-progress-bar');
   const hudFrameNum = document.getElementById('hud-frame-num');
   const hudProgressVal = document.getElementById('hud-progress-val');
@@ -141,45 +138,48 @@
     requestAnimationFrame(animationLoop);
   }
 
-  // --- Image Preloading Engine ---
-  function preloadImages() {
-    return new Promise((resolve) => {
-      let isResolved = false;
+  // --- Audio Engine with Fade Out ---
+  function handleAudio() {
+    if (!bgAudio || audioStarted) return;
+    
+    bgAudio.volume = 0.5; // Set volume to 50%
+    const playPromise = bgAudio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        audioStarted = true;
+        
+        // Handle fade out at the end of the song
+        bgAudio.addEventListener('timeupdate', () => {
+          const remainingTime = bgAudio.duration - bgAudio.currentTime;
+          if (remainingTime < 5.0 && remainingTime > 0) {
+            // Fade out over the last 5 seconds
+            bgAudio.volume = Math.max(0, (remainingTime / 5.0) * 0.5);
+          }
+        });
+      }).catch(error => {
+        console.log("Autoplay prevented. Waiting for user interaction.", error);
+      });
+    }
+  }
 
-      for (let i = 0; i < TOTAL_FRAMES; i++) {
+  // --- Background Image Loading ---
+  function startImageLoading() {
+    // Load frame 0 immediately so we can render the first frame quickly
+    const firstImg = new Image();
+    firstImg.src = getFrameUrl(0);
+    firstImg.onload = () => {
+      images[0] = firstImg;
+      if (!isLoaded) renderFrame(0);
+      
+      // Load the rest silently in the background
+      for (let i = 1; i < TOTAL_FRAMES; i++) {
         const img = new Image();
         img.src = getFrameUrl(i);
-
-        const onFrameComplete = () => {
-          loadedFrames++;
-          const progress = (loadedFrames / TOTAL_FRAMES);
-          const percent = Math.floor(progress * 100);
-
-          if (progressBar) progressBar.style.width = `${percent}%`;
-          if (loaderPercent) loaderPercent.textContent = `${percent}%`;
-          if (loaderCount) loaderCount.textContent = `${loadedFrames} / ${TOTAL_FRAMES} FRAMES`;
-
-          // Draw the first frame as soon as frame 0 loads
-          if (i === 0 && !isLoaded) {
-            renderFrame(0);
-          }
-
-          if (loadedFrames === TOTAL_FRAMES && !isResolved) {
-            isResolved = true;
-            if (loaderStatus) loaderStatus.textContent = 'Ready to launch';
-            resolve();
-          }
-        };
-
-        img.onload = onFrameComplete;
-        img.onerror = () => {
-          console.warn(`Frame ${i} failed to load: ${img.src}`);
-          onFrameComplete(); // Proceed anyway so preloader doesn't get stuck
-        };
-
         images[i] = img;
       }
-    });
+      isLoaded = true;
+    };
   }
 
   // --- Initialize Lenis Smooth Scroll ---
@@ -212,27 +212,25 @@
   }
 
   // --- App Initialization ---
-  async function init() {
+  function init() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas, { passive: true });
     window.addEventListener('scroll', calculateTargetFrame, { passive: true });
+    
+    // User interaction listeners for audio autoplay
+    document.addEventListener('click', handleAudio, { once: true });
+    document.addEventListener('scroll', handleAudio, { once: true });
+    document.addEventListener('touchstart', handleAudio, { once: true });
+
+    // Start loading images silently
+    startImageLoading();
 
     // Start render loop immediately
     requestAnimationFrame(animationLoop);
-
-    // Preload all assets
-    await preloadImages();
-
-    // Small delay for smooth visual transition
-    setTimeout(() => {
-      isLoaded = true;
-      if (preloader) {
-        preloader.classList.add('loaded');
-      }
-      initLenis();
-      calculateTargetFrame();
-      renderFrame(Math.round(currentFrame));
-    }, 300);
+    initLenis();
+    
+    // Attempt autoplay immediately
+    handleAudio();
   }
 
   // Boot on DOM ready
