@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Video Scroll Experience</title>
+  <meta name="description" content="Ultra-smooth scroll-driven video frame sequence animation built with HTML5 Canvas and dynamic lerp interpolation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Preloader Screen -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-content">
+
+      <h1 class="loader-title">INITIALIZING FRAMES</h1>
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="loader-stats">
+        <span id="loader-percent" class="loader-percent">0%</span>
+        <span id="loader-count" class="loader-count">0 / 240 FRAMES</span>
+      </div>
+      <div class="loader-status" id="loader-status">Preloading high-resolution assets...</div>
+    </div>
+  </div>
+
+  <!-- Main Canvas Viewport (Pinned Fixed) -->
+  <div class="canvas-wrapper">
+    <canvas id="hero-canvas"></canvas>
+    <div class="vignette-overlay"></div>
+  </div>
+
+  <!-- Scroll HUD Controls / Overlays -->
+  <div class="hud-overlay" id="hud-overlay">
+
+    <!-- Minimal Scroll Indicator -->
+    <div class="scroll-indicator" id="scroll-indicator">
+      <div class="mouse-icon">
+        <div class="wheel"></div>
+      </div>
+      <span class="scroll-text">SCROLL TO PLAY</span>
+    </div>
+
+
+  </div>
+
+  <!-- Persistent Headphone Link (Sits above everything) -->
+  <a href="https://music.youtube.com/playlist?list=PLqCo3wCAxOqGdzk64KQvsofPc022tGGZR" target="_blank" class="headphone-overlay" title="My YouTube Music Playlist">
+    <img src="headphone.jpg" alt="Vibe Headphones" />
+  </a>
+
+  <!-- Content Layer (Scrollable UI over Canvas) -->
+  <main class="content-layer" id="scroll-track">
+    <!-- Hero Section -->
+    <section class="section hero-section">
+      <div class="hero-left">
+        <h1 class="hero-title">RANIT<br>DUTTA</h1>
+        <div class="hero-script-group">
+          <span class="script-text script-artists">Developers</span>
+          <span class="script-text script-joy">At its</span>
+          <span class="script-text script-community">Finest</span>
+        </div>
+      </div>
+      
+      <div class="hero-right-nav">
+        <span class="nav-item">WHO</span>
+        <span class="nav-item">FULL STACK WEB<br>DEVELOPER</span>
+        <span class="nav-item">EDUCATION AND<br>PROGRAMMING</span>
+        <span class="nav-item">CREATIVE<br>THINKING</span>
+        <a href="https://wa.me/918777659549" target="_blank" class="nav-item contact-link">CONTACT</a>
+      </div>
+
+
+    </section>
+
+    <!-- Developer-Led Section -->
+    <section class="section artist-led-section">
+      <div class="artist-led-content">
+        <h2 class="section-title">DEVELOPER-LED</h2>
+        <div class="artist-led-body">
+          <p class="paragraph">I am a<br><strong>full-stack<br>developer</strong> bridging the gap<br>between design, robust logic, and seamless user experiences.</p>
+          <a href="https://github.com/RanitD-debug" target="_blank" class="outline-btn" style="text-decoration: none; display: inline-block;">VIEW MY WORK</a>
+        </div>
+      </div>
+      <div class="script-cluster">
+        <span class="script-text script-art">code</span>
+        <span class="script-text script-business">logic</span>
+        <span class="script-text script-education">design</span>
+        <span class="script-text script-comm2">scale</span>
+        <div class="yellow-scribble"></div>
+      </div>
+    </section>
+
+    <!-- Performance Driven Section -->
+    <section class="section joy-centered-section">
+      <div class="joy-image-wrapper">
+        <div class="joy-image-frame"></div>
+        <span class="script-text script-massive-joy">speed</span>
+      </div>
+      <div class="joy-text-content">
+        <h2 class="section-title">PERFORMANCE<br>DRIVEN</h2>
+        <p class="paragraph-wide">I build scalable and blazing fast applications with <em>clean code</em>, <strong>modern frameworks</strong>, and an eye for <strong>pixel-perfect design</strong>.</p>
+        <a href="mailto:ranitdutta42@gmail.com" class="outline-btn" style="text-decoration: none; display: inline-block;">LET'S COLLABORATE</a>
+      </div>
+    </section>
+
+    <!-- Passion Section -->
+    <section class="section community-section">
+      <div class="community-images">
+        <div class="comm-img-frame frame-1"></div>
+        <div class="comm-img-frame frame-2"></div>
+      </div>
+      <h2 class="section-title white-title">BUILT WITH<br>PASSION</h2>
+    </section>
+
+    <!-- Social Links Section -->
+    <section class="section social-section">
+      <div class="social-links">
+        <a href="https://github.com/RanitD-debug" target="_blank" class="outline-btn">GITHUB</a>
+        <a href="https://www.linkedin.com/in/ranit-dutta-b05ab0264/?lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3BZG%2FIz5neSOKN0CZuvgsXeA%3D%3D" target="_blank" class="outline-btn">LINKEDIN</a>
+        <a href="https://www.instagram.com/r.a.n.i.t_d.u.t.t.a/" target="_blank" class="outline-btn">INSTAGRAM</a>
+      </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="section testimonial-section">
+      <div class="testimonial-block">
+        <span class="quote-mark">"</span>
+        <p class="testimonial-text">Ranit is an exceptional developer who flawlessly brings complex ideas to life with seamless functionality and stunning design.</p>
+        <span class="testimonial-author">- A Satisfied Client</span>
+      </div>
+    </section>
+
+    <!-- Contact Footer -->
+    <footer class="contact-footer">
+      <div class="footer-details">
+        <a href="mailto:ranitdutta42@gmail.com" class="footer-link">ranitdutta42@gmail.com</a>
+        <a href="https://wa.me/918777659549" target="_blank" class="footer-link">+91 8777659549</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Smooth Scroll (Lenis) CDN and Main Script -->
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

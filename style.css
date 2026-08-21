@@ -1,0 +1,777 @@
+/* ==========================================================================
+   Base & Design System
+   ========================================================================== */
+:root {
+  --bg-primary: #08080a;
+  --bg-secondary: #121216;
+  --accent-yellow: #f5c400;
+  --accent-yellow-glow: rgba(245, 196, 0, 0.4);
+  --accent-yellow-subtle: rgba(245, 196, 0, 0.12);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --glass-bg: rgba(18, 18, 22, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  scroll-behavior: auto !important; /* Lenis handles smooth scrolling */
+  overscroll-behavior: none;
+}
+
+body {
+  background-color: var(--bg-primary);
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 196, 0, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-yellow);
+}
+
+/* Typography Utilities */
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+   Preloader Overlay
+   ========================================================================== */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #15151c 0%, #08080a 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s ease;
+  backdrop-filter: blur(10px);
+}
+
+.preloader.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-content {
+  width: 90%;
+  max-width: 440px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-yellow-subtle);
+  border: 1px solid rgba(245, 196, 0, 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent-yellow);
+  text-transform: uppercase;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-yellow);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-yellow);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.loader-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.progress-container {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #f5c400, #ffea79);
+  box-shadow: 0 0 12px var(--accent-yellow-glow);
+  border-radius: 4px;
+  transition: width 0.15s ease-out;
+}
+
+.loader-stats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: baseline;
+}
+
+.loader-percent {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent-yellow);
+}
+
+.loader-count {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.loader-status {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   Canvas & Viewport Layout
+   ========================================================================== */
+.canvas-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+#hero-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Subtle cinematic edge vignette */
+.vignette-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.headphone-overlay {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 110px;
+  height: 110px;
+  z-index: 20;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  border: 2px solid rgba(255,255,255,0.2);
+  mix-blend-mode: screen;
+  display: block;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.headphone-overlay:hover {
+  transform: scale(1.1);
+}
+
+.headphone-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+}
+
+/* ==========================================================================
+   HUD Overlay & Indicators
+   ========================================================================== */
+.hud-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+}
+
+/* Top Progress Line */
+.top-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #f5c400, #ffe76a);
+  box-shadow: 0 0 10px rgba(245, 196, 0, 0.6);
+  z-index: 100;
+  transition: width 0.1s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+/* Scroll to Explore Indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.scroll-indicator.hidden {
+  opacity: 0;
+  transform: translate(-50%, 15px);
+}
+
+.mouse-icon {
+  width: 22px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  background: rgba(18, 18, 22, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.mouse-icon .wheel {
+  width: 3px;
+  height: 7px;
+  background-color: var(--accent-yellow);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--accent-yellow);
+  animation: mouseWheel 1.8s infinite cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes mouseWheel {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+
+.scroll-text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* Bottom HUD Tags */
+.bottom-hud {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.hud-tag {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.tag-label {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+
+.tag-value {
+  color: var(--accent-yellow);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.tag-divider {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.tag-total {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.progress-tag .tag-value {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Content Layer (Magazine UI over Canvas)
+   ========================================================================== */
+.content-layer {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  pointer-events: auto; /* Allow interaction with buttons */
+  display: flex;
+  flex-direction: column;
+  padding: 5vw 8vw;
+  gap: 15vh;
+  /* Min height guarantees enough scroll for the 240 frames, but content height usually dictates */
+  min-height: 500vh;
+}
+
+.section {
+  position: relative;
+  width: 100%;
+}
+
+/* Typography specifics */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 12vw, 15rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  position: relative;
+  z-index: 2;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 8vw, 10rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.script-text {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(4rem, 6vw, 7rem);
+  line-height: 1;
+  color: var(--accent-yellow);
+  text-shadow: 2px 4px 10px rgba(0,0,0,0.4);
+  position: absolute;
+  z-index: 3;
+  transform: rotate(-8deg);
+}
+
+.paragraph {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 400;
+  max-width: 300px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2rem;
+}
+
+.paragraph-wide {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  font-weight: 400;
+  max-width: 500px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2.5rem;
+}
+
+.outline-btn {
+  background: transparent;
+  border: 1px solid var(--accent-yellow);
+  color: var(--accent-yellow);
+  padding: 0.8rem 1.5rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.outline-btn:hover {
+  background: var(--accent-yellow);
+  color: #000;
+}
+
+/* 1. Hero Section */
+.hero-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5vh;
+  min-height: 80vh;
+}
+
+.hero-left {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-script-group {
+  position: absolute;
+  top: 15%;
+  left: 5%;
+  display: flex;
+  flex-direction: column;
+}
+
+.script-artists { top: 0; left: 0; }
+.script-joy { top: 70px; left: 40px; color: #fff; }
+.script-community { top: 140px; left: -20px; }
+
+.hero-right-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+  margin-top: 2rem;
+  z-index: 2;
+}
+
+.nav-item {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: color 0.3s;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: var(--accent-yellow);
+}
+
+.hero-yellow-block {
+  position: absolute;
+  top: 40%;
+  left: 15%;
+  width: 35vw;
+  height: 40vh;
+  background: rgba(245, 196, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 196, 0, 0.2);
+  z-index: 1;
+}
+
+.hero-portrait {
+  position: absolute;
+  top: 10%;
+  right: 20%;
+  width: 30vw;
+  height: 50vh;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+/* 2. Artist-Led Section */
+.artist-led-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10vw;
+  padding-left: 5vw;
+}
+
+.artist-led-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.script-cluster {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin-top: 5rem;
+}
+
+.script-art { top: 0; left: 20px; color: #fff; }
+.script-business { top: 50px; left: -10px; }
+.script-education { top: 100px; left: 10px; color: #fff; }
+.script-comm2 { top: 150px; left: 30px; }
+
+.yellow-scribble {
+  position: absolute;
+  top: 60px;
+  right: -30px;
+  width: 60px;
+  height: 120px;
+  border-right: 4px solid var(--accent-yellow);
+  border-bottom: 4px solid var(--accent-yellow);
+  border-radius: 0 0 50px 0;
+  opacity: 0.8;
+  transform: rotate(15deg);
+}
+
+/* 3. Joy Centered Section */
+.joy-centered-section {
+  display: flex;
+  align-items: center;
+  gap: 10vw;
+  padding-left: 5vw;
+}
+
+.joy-image-wrapper {
+  position: relative;
+}
+
+.joy-image-frame {
+  width: 25vw;
+  height: 35vw;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 4px solid var(--accent-yellow);
+}
+
+.script-massive-joy {
+  font-size: clamp(8rem, 15vw, 18rem);
+  bottom: -15%;
+  left: -20%;
+  color: #fff;
+  transform: rotate(-10deg);
+}
+
+.joy-text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+/* 4. Community Created Section */
+.community-section {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(245, 196, 0, 0.65);
+  backdrop-filter: blur(15px);
+  padding: 10vh 8vw;
+  display: flex;
+  flex-direction: column;
+  gap: 5vh;
+}
+
+.white-title {
+  color: #fff;
+  text-shadow: none;
+}
+
+.community-images {
+  display: flex;
+  gap: 2rem;
+}
+
+.comm-img-frame {
+  width: 20vw;
+  height: 15vw;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 5. Social Links Section */
+.social-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5vh 0;
+}
+
+.social-links {
+  display: flex;
+  gap: 2rem;
+}
+
+/* 6. Testimonial Section */
+.testimonial-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5vh 10vw;
+}
+
+.testimonial-block {
+  position: relative;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.quote-mark {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-family: var(--font-display);
+  font-size: 6rem;
+  color: var(--accent-yellow);
+  opacity: 0.5;
+  line-height: 1;
+}
+
+.testimonial-text {
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+}
+
+.testimonial-author {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent-yellow);
+}
+
+/* 7. Contact Footer */
+.contact-footer {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(18, 18, 22, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4vh 8vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5vh;
+}
+
+.footer-details {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: var(--accent-yellow);
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 768px) {
+  .hud-overlay {
+    padding: 1rem;
+  }
+  
+  .bottom-hud {
+    right: 1rem;
+    bottom: 1rem;
+    gap: 0.5rem;
+  }
+
+  .hud-tag {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.7rem;
+  }
+  
+  .scroll-indicator {
+    bottom: 1.5rem;
+    left: 1.25rem;
+    transform: none;
+  }
+  
+  .scroll-indicator.hidden {
+    transform: translateY(15px);
+  }
+}
